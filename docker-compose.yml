@@ -30,6 +30,8 @@ services:
   # Service Registry
   service-registry:
     image: aakashverma1124/service-registry:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
     ports:
       - "8761:8761"
 
