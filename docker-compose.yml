@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  # Postgres for user-authentication-service
+  user-authentication-db:
+    image: postgres:16-alpine
+    container_name: user-authentication-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: user_authentication
+    ports:
+      - "5435:5432" # Map to 5435 on localhost (to avoid conflict)
+    volumes:
+      - user-authentication-db-data:/var/lib/postgresql/data
+
+  # Postgres for product-service
+  product-db:
+    image: postgres:16-alpine
+    container_name: product-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: products
+    ports:
+      - "5436:5432" # Map to 5436 on localhost
+    volumes:
+      - product-db-data:/var/lib/postgresql/data
+
+  # Service Registry
+  service-registry:
+    image: aakashverma1124/service-registry:latest
+    ports:
+      - "8761:8761"
+
+  # user-authentication-service
+  user-authentication-service:
+    image: aakashverma1124/user-authentication-service:latest
+    # ports:
+    #   - "8081:8081"
+    depends_on:
+      - service-registry
+      - user-authentication-db
+
+  # product-service
+  product-service:
+    image: aakashverma1124/product-service:latest
+    # ports:
+    #   - "8082:8082"
+    depends_on:
+      - service-registry
+      - product-db
+
+  # API Gateway
+  api-gateway:
+    image: aakashverma1124/api-gateway:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-registry
+      - user-authentication-service
+      - product-service
+
+volumes:
+  user-authentication-db-data:
+  product-db-data:

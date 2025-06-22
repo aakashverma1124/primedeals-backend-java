@@ -1,0 +1,34 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-authentication-service
+  datasource:
+    url: jdbc:postgresql://user-authentication-db:5432/user_authentication
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: +Shd3xxA9idbJK1G1nfnoS5vgYOTGIqmlB21pTuFFPDynMwq8PWDC+kvRDt5b5YE
+      expiration: 86400000 # 1 day in milliseconds
+      refresh-token:
+        expiration: 604800000 # 7 days in milliseconds
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://service-registry:8761/eureka
