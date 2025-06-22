@@ -26,13 +26,19 @@ spring:
           uri: lb://user-authentication-service
           predicates:
             - Path=/api/v1/users/**
+          filters:
+            - RequireUserRoleFilter
 
         - id: product-service-admin-protected-routes
           uri: lb://product-service
           predicates:
             - Path=/api/v1/admin/products/**
+          filters:
+            - RequireAdminRoleFilter
 
         - id: user-authentication-service-admin-protected-routes
           uri: lb://user-authentication-service
           predicates:
             - Path=/api/v1/admin/users/**
+          filters:
+            - RequireAdminRoleFilter
