@@ -21,12 +21,13 @@ public class RoleBasedAuthFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getPath().toString();
 
-        // Allow public routes
+        // Allow public routes (no authentication required)
         if (path.startsWith("/api/v1/auth") || path.startsWith("/api/v1/products")) {
             return chain.filter(exchange);
         }
 
-        // Check Authorization header
+        // For all other routes, check if Authorization header is present
+        // The specific role checks are now handled by declarative filters in YAML
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -39,22 +40,7 @@ public class RoleBasedAuthFilter implements GlobalFilter, Ordered {
             return exchange.getResponse().setComplete();
         }
 
-        String role = jwtUtil.extractRole(token);
-
-        // Role-based access control
-        if (path.startsWith("/api/v1/admin")) {
-            if (!"ADMIN".equals(role)) {
-                exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-                return exchange.getResponse().setComplete();
-            }
-        } else if (path.startsWith("/api/v1/users")) {
-            if (!"USER".equals(role) && !"ADMIN".equals(role)) {
-                exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-                return exchange.getResponse().setComplete();
-            }
-        }
-
-        // All checks passed
+        // All checks passed - let the route-specific filters handle role validation
         return chain.filter(exchange);
     }
 

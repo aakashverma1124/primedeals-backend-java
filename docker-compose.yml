@@ -36,8 +36,6 @@ services:
   # user-authentication-service
   user-authentication-service:
     image: aakashverma1124/user-authentication-service:latest
-    # ports:
-    #   - "8081:8081"
     depends_on:
       - service-registry
       - user-authentication-db
@@ -45,8 +43,6 @@ services:
   # product-service
   product-service:
     image: aakashverma1124/product-service:latest
-    # ports:
-    #   - "8082:8082"
     depends_on:
       - service-registry
       - product-db
@@ -56,6 +52,9 @@ services:
     image: aakashverma1124/api-gateway:latest
     ports:
       - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     depends_on:
       - service-registry
       - user-authentication-service

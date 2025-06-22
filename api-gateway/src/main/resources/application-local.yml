@@ -1,0 +1,11 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+application:
+  security:
+    jwt:
+      secret-key: +Shd3xxA9idbJK1G1nfnoS5vgYOTGIqmlB21pTuFFPDynMwq8PWDC+kvRDt5b5YE

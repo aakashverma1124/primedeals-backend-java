@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: api-gateway
+  profiles:
+    active: local
   cloud:
     gateway:
       discovery:
@@ -34,15 +36,3 @@ spring:
           uri: lb://user-authentication-service
           predicates:
             - Path=/api/v1/admin/users/**
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://service-registry:8761/eureka
-  instance:
-    prefer-ip-address: true
-
-application:
-  security:
-    jwt:
-      secret-key: +Shd3xxA9idbJK1G1nfnoS5vgYOTGIqmlB21pTuFFPDynMwq8PWDC+kvRDt5b5YE
